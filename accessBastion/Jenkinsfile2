@@ -1,0 +1,18 @@
+pipeline {
+    agent { label 'bastion' }
+    parameters {
+        string(name: 'USUARIO', description: 'Nombre del usuario a crear', trim: true)
+    }
+    environment {
+        PASSWORD = credentials('USER_PASSWORD')
+    }
+    stages {
+        stage('Creando Usuario') {
+            steps {
+                script {
+                    sh "sudo useradd -d /home/$USUARIO -m -p \$(echo '$PASSWORD' | openssl passwd -1 -stdin) $USUARIO"
+                }
+            }
+        }
+    }
+}
